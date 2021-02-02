@@ -1,22 +1,24 @@
-const {API_QUERY,} = require('./constants');
 const request = require('request');
+const { QUERY } = require("./constants");
 
-const fetchBreedDescription = function(breedName, callback) {
-  if (!breedName) {
-    return callback('You didn\'t input any breed...', null);
+const fetchBreedDescription = (breed, callback) => {
+  if (!breed) {
+    callback(`You didn't enter any breed...`, null);
   }
 
-  request(API_QUERY + breedName, (error, response, body) => {
-    let data = JSON.parse(body)[0];
-    if (error) {
-      return callback(error, null);
-    } else if (data === undefined) {
-      return callback('Breed not found!', null);
-    } else if (data) {
-      return callback(null, data.description);
+  request(QUERY + breed, (err, res, body) => {
+    if (err) {
+      callback(err, null);
+    }
+
+    const data = JSON.parse(body)[0];
+
+    if (data) {
+      callback(null, data.description);
+    } else {
+      callback(`Breed '${breed}' not found.`, null);
     }
   });
 };
 
-
-module.exports = {fetchBreedDescription};
+module.exports = { fetchBreedDescription }
